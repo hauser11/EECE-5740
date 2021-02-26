@@ -1,0 +1,90 @@
+import pandas as pd
+A = pd.read_csv(r'C:\Users\HausDesktop\Desktop\diabetes.csv')
+print('Your Dataset input dimensions are: \n', A.shape)
+A
+def preprocess(A):
+    import numpy as np
+    c = A.shape[1] # 17
+    x = A.values[1:,:c-1]
+    y = A.values[1:, c-1:c]
+    i,j,k = 0,0,0
+    features = []
+    targets = []
+    r = len(A)
+    print(x)
+    # Handle targets first: Since it is known there is a cateogorical target of either 
+    # Positive or Negative
+    for i in range(0,r-1):
+        if y[i] == 'Positive':
+            targets.append(1)
+        else:
+            targets.append(0)
+    
+    
+    targets = np.array(targets)
+    # Handle features:
+    i,j,k= 0,0,0
+    # handle numeric data seperately
+    x[:,0] = x[:,0]/100
+    print(x)
+    # handle strings
+    for j in range(1,c-1):
+        for i in range(r-1):
+            if x[i,j] == 'Male':
+                x[i,j] = 0.55
+            elif x[i,j] =='Female':
+                x[i,j] = .45
+            elif x[i,j] == 'Yes':
+                x[i,j] = 1
+            else:
+                x[i,j] = 0
+                
+    print(x) 
+    # analyze for joint probabilities:
+    for i in range(r-1):
+        
+        if x[i,15] == 1: #if obese 
+            if x[i,0] <= 30:
+                x[i,0] = x[i,15] * x[i,0] + x[i,0] # n/16% increase
+            elif x[i,0] <= 30:
+                x[i,0] = x[i,15] * x[i,0] + x[i,0]# n/16% increase
+        elif x[i,15] == 0:
+            if x[i, 14] == 1 and x[i, 6] == 1:
+                x[i,15] = x[i, 14]*x[i, 6] 
+                
+        if x[i,2] == .55: #if male
+            if x[i,7] == 1:
+                x[i,2] = x[i,7]*x[i,2] + x[i,2] # increase
+        elif x[i,2] == .45: #if female
+            if x[i,7] == 1: # and genital thrush
+                x[i,7] = x[i,7] - x[i,2] # decrease
+                
+         
+                
+                
+        # a disjoint probability if these three happen but healthing response normal
+        if x[i, 8] == 1 and x[i, 9] == 1 and x[i, 10] == 1 and x[i,11] == 0:
+            x[i, 10],x[i, 9],x[i, 8] = 0,0,0
+        
+            
+    print('exemplary weighted array\n',x) 
+    #Sum and normalize
+    candidate = []
+    
+    for i in range(r-1):
+        x_i = np.sum(x[i])/(A.shape[1]-1)
+        candidate.append(x_i)
+        
+    print(len(candidate))
+    print(candidate[1])
+    candidate = np.array(candidate)
+    print(len(targets))
+    tfpair = np.empty((r-1,2))
+    tfpair[:,0] = candidate.T
+    tfpair[:,1] = targets.T
+    print('Here is the shape of your target feature pair array: ', tfpair.shape)
+    preprocess(A)
+
+
+
+    
