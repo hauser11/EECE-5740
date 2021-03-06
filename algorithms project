@@ -84,6 +84,68 @@ def preprocess(A):
     tfpair[:,1] = targets.T
     print('Here is the shape of your target feature pair array: ', tfpair.shape)
     preprocess(A)
+    
+    
+tfpair = preprocess(A)
+print('accessing tf', tfpair)
+
+tfpair[1]
+
+def pos_neg_split(tfpair): #, start, stop
+    import random
+    r = len(tfpair)
+    c = tfpair.shape[1]
+    i,j,k=0,0,0
+    
+    # first find if the target is positive(1) or negative(0)
+    pos = []
+    neg = []
+    for i in range(r):
+        if tfpair[i,1] == 1:
+            pos.append(tfpair[i])
+        else:
+            neg.append(tfpair[i])
+    #print('here is pos[0]:\n',pos[0:10])
+    #print('here is neg[0]:\n',neg[0:10])
+    import numpy as np
+    pos = np.asarray(pos)
+    neg = np.asarray(neg)
+
+    pos = pos[:,0]
+    neg = neg[:,0]
+    return pos, neg
+    
+    import random
+def r_quicksort(A, start, stop):
+    if(start<stop):
+        pi = r_part(A, start, stop)
+        r_quicksort(A, start, pi-1)
+        r_quicksort(A, pi+1, stop)
+def r_part(A, start,stop):
+    rp = random.randrange(start,stop)
+    A[start], A[rp]= A[rp],A[start]
+    return partition(A,start,stop)
+def partition(A, start, stop):
+    piv = start
+    i = start + 1
+    for j in range(start+1,stop+1):
+        if A[j] <= A[piv]:
+            A[i],A[j]=A[j],A[i]
+            i += 1
+    A[piv], A[i-1] = A[i-1], A[piv]
+    piv = i - 1
+    return piv
+    
+    pos, neg = pos_neg_split(tfpair)
+
+print(pos.shape)
+print(pos[1])
+print(neg.shape)
+print(neg[0])
+pos_qs = r_quicksort(pos,0, len(pos)-1)
+print(pos_qs)
+neg_qs = r_quicksort(neg, 0, len(neg)-1)
+print(neg_qs)
 
 
 
