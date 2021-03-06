@@ -75,18 +75,17 @@ def preprocess(A):
         x_i = np.sum(x[i])/(A.shape[1]-1)
         candidate.append(x_i)
         
-    print(len(candidate))
-    print(candidate[1])
-    candidate = np.array(candidate)
-    print(len(targets))
+       candidate1 = np.array(candidate)
     tfpair = np.empty((r-1,2))
-    tfpair[:,0] = candidate.T
+    tfpair[:,0] = candidate1.T
     tfpair[:,1] = targets.T
     print('Here is the shape of your target feature pair array: ', tfpair.shape)
-    preprocess(A)
+    return tfpair, candidate, candidate1
+
+
     
     
-tfpair = preprocess(A)
+tfpair, candidate, cadidate1 = preprocess(A)
 print('accessing tf', tfpair)
 
 tfpair[1]
